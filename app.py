@@ -73,29 +73,41 @@ with col3:
 
 st.divider()
 
-# ========================= AI COACH CHAT (Unchanged) =========================
+# ========================= AI COACH CHAT – CLEAN & PROFESSIONAL =========================
 st.subheader("Ask Your AI Coach Anything")
 user_q = st.text_input(
-    "",
-    placeholder="e.g., Why am I overspending on food? | ¿Por qué gasto tanto en comida?" if lang == "English" else "ej. ¿Por qué gasto tanto en comida?"
+    "", placeholder="e.g., Why am I overspending on food? | ¿Por qué gasto tanto en comida?"
 )
 
 if user_q:
     with st.spinner("Thinking…"):
         q = user_q.lower()
-        if "food" in q or "comida" in q:
-            response = f"You're currently spending **${food_spent}** on food this month (budget was ${food_budget}). Try meal-prepping on Sundays — our users save an average of 31% doing this. Want me to create a new ${food_budget} food budget?"
-        elif "save" in q or "ahorrar" in q:
-            response = f"With your ${income:,} income and current spending, you can easily save **${savings_rate}%/month** ({(income * savings_rate / 100):.0f}). I recommend auto-investing ${(income * 0.15):.0f} into VTI."
+        
+        # Clean formatting — always round to whole dollars
+        food_spent_clean = f"${food_spent:,.0f}"
+        food_budget_clean = f"${food_budget:,.0f}"
+        savings_amount = income - total_spent
+        savings_clean = f"${savings_amount:,.0f}"
+
+        if "food" in q or "comida" in q or "dining" in q:
+            response = f"You're currently spending **{food_spent_clean}** on food & dining this month "
+            response += f"(your budget was {food_budget_clean}). "
+            response += "Try meal-prepping on Sundays — our users save an average of 31% doing this. "
+            response += f"Want me to lower your food budget to $150 and redirect the savings?"
+
+        elif "save" in q or "ahorrar" in q or "savings" in q:
+            response = f"With your ${income:,} income and current spending, "
+            response += f"you’re on track to save **{savings_clean}/month** ({savings_rate:.0f}% rate). "
+            response += f"I can help you auto-invest ${(income*0.15):.0f} into low-cost ETFs every paycheck."
+
         elif "invest" in q or "invertir" in q:
-            response = "Moderate risk profile → recommended allocation: 60% stocks (VTI), 30% bonds (BND), 10% cash. Start with 15% of income recurring?"
+            response = f"Risk profile: {st.session_state.risk}. "
+            response += "Recommended recurring investment: "
+            response += "VTI (total stock market) + BND (bonds) + 5% high-yield savings."
+
         else:
-            response = "I'm learning every day! Try asking about food, savings, or investment questions."
-        
-        if lang == "Español":
-            # Simple mock translations (expand as needed)
-            response = response.replace("Try meal-prepping", "Prueba preparar comidas los domingos")
-        
+            response = "I’m still learning! Try asking about food spending, savings, or investments."
+
         st.success(response)
 
 # ========================= ONE-TAP BUDGET OPTIMIZER (Now Uses Income) =========================
