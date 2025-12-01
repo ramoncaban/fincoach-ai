@@ -17,17 +17,18 @@ st.markdown(
     """, unsafe_allow_html=True
 )
 
-# ========================= MOCK DATA (Updated for Dec 2025) =========================
+# ========================= MOCK DATA (Fixed for December 2025) =========================
 if "transactions" not in st.session_state:
-    today = datetime(2025, 12, 1)  # Current date
+    # Force all transactions into the current month (December 2025) so they always show up
+    today = datetime.today()  # Uses your actual computer date
     st.session_state.transactions = pd.DataFrame([
-        {"date": today - pd.Timedelta(days=3), "description": "Starbucks", "amount": -12.50, "category": "Food & Dining"},
-        {"date": today - pd.Timedelta(days=4), "description": "Whole Foods", "amount": -87.30, "category": "Groceries"},
-        {"date": today - pd.Timedelta(days=5), "description": "Netflix", "amount": -15.99, "category": "Entertainment"},
-        {"date": today - pd.Timedelta(days=6), "description": "Uber", "amount": -22.10, "category": "Transport"},
-        {"date": today - pd.Timedelta(days=7), "description": "Salary", "amount": 3200, "category": "Income"},
-        {"date": today - pd.Timedelta(days=11), "description": "Target", "amount": -145.60, "category": "Shopping"},
-        {"date": today - pd.Timedelta(days=13), "description": "Chipotle", "amount": -28.40, "category": "Food & Dining"},
+        {"date": today - pd.Timedelta(days=1), "description": "Starbucks",      "amount": -18.50, "category": "Food & Dining"},
+        {"date": today - pd.Timedelta(days=2), "description": "Chipotle",       "amount": -24.30, "category": "Food & Dining"},
+        {"date": today - pd.Timedelta(days=3), "description": "Whole Foods",    "amount": -98.70, "category": "Groceries"},
+        {"date": today - pd.Timedelta(days=4), "description": "Uber",           "amount": -31.20, "category": "Transport"},
+        {"date": today - pd.Timedelta(days=5), "description": "Netflix",        "amount": -15.99, "category": "Entertainment"},
+        {"date": today - pd.Timedelta(days=7), "description": "Target",         "amount": -87.40, "category": "Shopping"},
+        {"date": today - pd.Timedelta(days=10), "description": "Salary Deposit","amount": 4000,   "category": "Income"},
     ])
     st.session_state.goal = "Save $500/month"
     st.session_state.risk = "Moderate"
