@@ -17,18 +17,20 @@ st.markdown(
     """, unsafe_allow_html=True
 )
 
-# ========================= MOCK DATA (Fixed for December 2025) =========================
+# ========================= MOCK DATA – GUARANTEED TO ALWAYS SHOW UP =========================
 if "transactions" not in st.session_state:
-    # Force all transactions into the current month (December 2025) so they always show up
-    today = datetime.today()  # Uses your actual computer date
+    # Force all transactions into the CURRENT REAL MONTH so they are NEVER filtered out
+    from datetime import datetime, timedelta
+    today = datetime.now()  # Uses your actual computer date TODAY
+
     st.session_state.transactions = pd.DataFrame([
-        {"date": today - pd.Timedelta(days=1), "description": "Starbucks",      "amount": -18.50, "category": "Food & Dining"},
-        {"date": today - pd.Timedelta(days=2), "description": "Chipotle",       "amount": -24.30, "category": "Food & Dining"},
-        {"date": today - pd.Timedelta(days=3), "description": "Whole Foods",    "amount": -98.70, "category": "Groceries"},
-        {"date": today - pd.Timedelta(days=4), "description": "Uber",           "amount": -31.20, "category": "Transport"},
-        {"date": today - pd.Timedelta(days=5), "description": "Netflix",        "amount": -15.99, "category": "Entertainment"},
-        {"date": today - pd.Timedelta(days=7), "description": "Target",         "amount": -87.40, "category": "Shopping"},
-        {"date": today - pd.Timedelta(days=10), "description": "Salary Deposit","amount": 4000,   "category": "Income"},
+        {"date": today - timedelta(days=1), "description": "Starbucks",          "amount": -19.50, "category": "Food & Dining"},
+        {"date": today - timedelta(days=2), "description": "Chipotle",           "amount": -26.80, "category": "Food & Dining"},
+        {"date": today - timedelta(days=3), "description": "Whole Foods",         "amount": -112.40,"category": "Groceries"},
+        {"date": today - timedelta(days=4), "description": "Uber Eats",           "amount": -38.20, "category": "Food & Dining"},
+        {"date": today - timedelta(days=5), "description": "Netflix",            "amount": -15.99, "category": "Entertainment"},
+        {"date": today - timedelta(days=6), "description": "Amazon",             "amount": -89.70, "category": "Shopping"},
+        {"date": today - timedelta(days=10),"description": "Salary Deposit",     "amount": 4000,   "category": "Income"},
     ])
     st.session_state.goal = "Save $500/month"
     st.session_state.risk = "Moderate"
@@ -48,7 +50,11 @@ with st.sidebar:
 # ========================= MAIN DASHBOARD (Now Dynamic!) =========================
 df = st.session_state.transactions.copy()
 df['date'] = pd.to_datetime(df['date'])
-current_month = df['date'].dt.month == 12  # Dec 2025
+
+# NEW: Always count transactions from the last 30 days — works forever
+from datetime import datetime, timedelta
+cutoff_date = datetime.now() - timedelta(days=30)
+current_month = df['date'] >= cutoff_date
 
 # Dynamic calculations
 total_spent = abs(df[current_month & (df['amount'] < 0)]['amount'].sum())
